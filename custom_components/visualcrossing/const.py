@@ -4,6 +4,7 @@ from homeassistant.components.weather import (
     DOMAIN as WEATHER_DOMAIN,
 )
 
-DOMAIN = "visualcrossing"
-
 CONF_DAYS = "days"
+
+DEFAULT_NAME = "Home"
+DOMAIN = "visualcrossing"

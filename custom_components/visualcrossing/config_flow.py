@@ -19,6 +19,7 @@ from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from pyVisualCrossing import VisualCrossing, ForecastData
 
 from .const import (
+    DEFAULT_NAME,
     DOMAIN,
     CONF_DAYS,
 )
@@ -72,7 +73,7 @@ class VCHandler(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_create_entry(
             title=data.location_name,
             data={
-                CONF_NAME: data.location_name,
+                CONF_NAME: user_input[CONF_NAME],
                 CONF_API_KEY: user_input[CONF_API_KEY],
                 CONF_LATITUDE: user_input[CONF_LATITUDE],
                 CONF_LONGITUDE: user_input[CONF_LONGITUDE],
@@ -85,6 +86,7 @@ class VCHandler(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user",
             data_schema=vol.Schema(
                 {
+                    vol.Required(CONF_NAME, default=DEFAULT_NAME): str,
                     vol.Required(CONF_API_KEY): str,
                     vol.Required(
                         CONF_LATITUDE, default=self.hass.config.latitude
@@ -117,6 +119,10 @@ class VCOptionsFlowHandler(config_entries.OptionsFlow):
             step_id="init",
             data_schema=vol.Schema(
                 {
+                    vol.Required(
+                        CONF_NAME,
+                        default=self._config_entry.data.get(CONF_NAME, DEFAULT_NAME),
+                    ): str,
                     vol.Optional(
                         CONF_LANGUAGE,
                         default=self._config_entry.data.get(CONF_LANGUAGE, "en"),
