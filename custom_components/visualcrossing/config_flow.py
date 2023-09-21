@@ -71,7 +71,7 @@ class VCHandler(config_entries.ConfigFlow, domain=DOMAIN):
         self._abort_if_unique_id_configured
 
         return self.async_create_entry(
-            title=data.location_name,
+            title=user_input[CONF_NAME],
             data={
                 CONF_NAME: user_input[CONF_NAME],
                 CONF_API_KEY: user_input[CONF_API_KEY],

@@ -110,7 +110,7 @@ class VCWeather(SingleCoordinatorWeatherEntity[VCDataUpdateCoordinator]):
         self._hourly = hourly
         self._attr_entity_registry_enabled_default = not hourly
         self._attr_device_info = DeviceInfo(
-            name=f"{config[CONF_NAME]} Weather",
+            name="Weather",
             entry_type=DeviceEntryType.SERVICE,
             identifiers={(DOMAIN,)},  # type: ignore[arg-type]
             manufacturer="Visual Crossing",
