@@ -12,7 +12,6 @@ from homeassistant.components.weather import (
     ATTR_CONDITION_SNOWY_RAINY,
     ATTR_CONDITION_SUNNY,
     ATTR_CONDITION_WINDY,
-    DOMAIN as WEATHER_DOMAIN,
 )
 
 CONF_DAYS = "days"

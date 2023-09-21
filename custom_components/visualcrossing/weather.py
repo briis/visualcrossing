@@ -12,7 +12,6 @@ from homeassistant.components.weather import (
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
-    CONF_API_KEY,
     CONF_LATITUDE,
     CONF_LONGITUDE,
     CONF_NAME,
@@ -28,7 +27,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.util.unit_system import METRIC_SYSTEM
 
 from . import VCDataUpdateCoordinator
-from .const import CONDITIONS_MAP, CONF_DAYS, DOMAIN
+from .const import CONDITIONS_MAP, DOMAIN
 
 DEFAULT_NAME = "Visual Crossing Weather"
 
