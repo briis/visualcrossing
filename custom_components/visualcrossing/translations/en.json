@@ -27,7 +27,6 @@
             "init": {
                 "data": {
                     "name": "Location Name",
-                    "language": "Select language for description values (See Github for list of values)",
                     "days": "Type the number of days to get forecast for. (Default: 7, min: 1, max: 14"
                 }
             }
