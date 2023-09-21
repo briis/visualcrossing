@@ -108,7 +108,7 @@ class VCWeatherData:
             self._config[CONF_API_KEY],
             self._config[CONF_LATITUDE],
             self._config[CONF_LONGITUDE],
-            days=7,
+            days=self._config[CONF_DAYS],
             session=async_get_clientsession(self.hass),
         )
 
