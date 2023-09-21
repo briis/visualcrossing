@@ -7,3 +7,4 @@ TODO:
 - Update this file with more Information
 - Implement more detailed error handling, to ensure users know why things go wrong if they go wrong.
 - Add images to Home Assistant
+- Implement Number of Days option when retrieving forecast records
