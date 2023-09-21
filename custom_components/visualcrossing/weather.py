@@ -28,7 +28,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.util.unit_system import METRIC_SYSTEM
 
 from . import VCDataUpdateCoordinator
-from .const import CONF_DAYS, DOMAIN
+from .const import CONDITIONS_MAP, CONF_DAYS, DOMAIN
 
 DEFAULT_NAME = "Visual Crossing Weather"
 
@@ -70,6 +70,14 @@ def _calculate_unique_id(config: MappingProxyType[str, Any], hourly: bool) -> st
         name_appendix = "-hourly"
 
     return f"{config[CONF_LATITUDE]}-{config[CONF_LONGITUDE]}{name_appendix}"
+
+def format_condition(condition: str) -> str:
+    """Return condition from dict CONDITIONS_MAP."""
+    for key, value in CONDITIONS_MAP.items():
+        if condition in value:
+            return key
+    return condition
+
 
 class VCWeather(SingleCoordinatorWeatherEntity[VCDataUpdateCoordinator]):
     """Implementation of a Visual Crossing weather condition."""
@@ -118,7 +126,7 @@ class VCWeather(SingleCoordinatorWeatherEntity[VCDataUpdateCoordinator]):
         condition = self.coordinator.data.current_weather_data.icon
         if condition is None:
             return None
-        return condition
+        return format_condition(condition)
 
     @property
     def native_temperature(self) -> float | None:
@@ -171,7 +179,7 @@ class VCWeather(SingleCoordinatorWeatherEntity[VCDataUpdateCoordinator]):
 
         if hourly:
             for item in self.coordinator.data.hourly_forecast:
-                condition = item.icon
+                condition = None if item.icon is None else format_condition(item.icon)
                 datetime = item.datetime.isoformat()
                 humidity = item.humidity
                 precipitation_probability = item.precipitation_probability
@@ -201,7 +209,7 @@ class VCWeather(SingleCoordinatorWeatherEntity[VCDataUpdateCoordinator]):
                 ha_forecast.append(ha_item)
         else:
             for item in self.coordinator.data.daily_forecast:
-                condition = item.icon
+                condition = None if item.icon is None else format_condition(item.icon)
                 datetime = item.datetime.isoformat()
                 precipitation_probability = item.precipitation_probability
                 native_temperature = item.temperature
