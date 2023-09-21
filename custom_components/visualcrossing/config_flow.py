@@ -126,7 +126,7 @@ class VCOptionsFlowHandler(config_entries.OptionsFlow):
                     ): str,
                     vol.Optional(
                         CONF_DAYS, default=self._config_entry.data.get(CONF_DAYS, DEFAULT_DAYS)
-                    ): str,
+                    ): vol.All(vol.Coerce(int), vol.Range(min=1, max=14)),
                 }
             ),
         )

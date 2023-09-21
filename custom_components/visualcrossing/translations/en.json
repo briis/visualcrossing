@@ -27,7 +27,7 @@
             "init": {
                 "data": {
                     "name": "Location Name",
-                    "days": "Type the number of days to get forecast for. (Default: 7, min: 1, max: 14"
+                    "days": "Number of forecast days. (Default: 7, min: 1, max: 14"
                 }
             }
         }
