@@ -75,7 +75,7 @@ class VCDataUpdateCoordinator(DataUpdateCoordinator["VCWeatherData"]):
 
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry) -> None:
         """Initialize global Visual Crossing data updater."""
-        self.weather = VCWeatherData(hass, config_entry.data)
+        self.weather = VCWeatherData(hass, config_entry.data, config_entry.options)
         self.weather.initialize_data()
 
         update_interval = timedelta(minutes=randrange(55, 65))
@@ -93,10 +93,16 @@ class VCDataUpdateCoordinator(DataUpdateCoordinator["VCWeatherData"]):
 class VCWeatherData:
     """Keep data for Visual Crossing entity data."""
 
-    def __init__(self, hass: HomeAssistant, config: MappingProxyType[str, Any]) -> None:
+    def __init__(
+        self,
+        hass: HomeAssistant,
+        config: MappingProxyType[str, Any],
+        options: MappingProxyType[str, Any],
+    ) -> None:
         """Initialise the weather entity data."""
         self.hass = hass
         self._config = config
+        self._options = options
         self._weather_data: VisualCrossing
         self.current_weather_data: ForecastData = {}
         self.daily_forecast: ForecastDailyData = []
@@ -108,7 +114,7 @@ class VCWeatherData:
             self._config[CONF_API_KEY],
             self._config[CONF_LATITUDE],
             self._config[CONF_LONGITUDE],
-            days=self._config[CONF_DAYS],
+            days=self._options[CONF_DAYS],
             session=async_get_clientsession(self.hass),
         )
 

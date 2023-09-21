@@ -77,6 +77,8 @@ class VCHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 CONF_API_KEY: user_input[CONF_API_KEY],
                 CONF_LATITUDE: user_input[CONF_LATITUDE],
                 CONF_LONGITUDE: user_input[CONF_LONGITUDE],
+            },
+            options={
                 CONF_DAYS: DEFAULT_DAYS,
             },
         )
@@ -125,7 +127,8 @@ class VCOptionsFlowHandler(config_entries.OptionsFlow):
                         default=self._config_entry.data.get(CONF_NAME, DEFAULT_NAME),
                     ): str,
                     vol.Optional(
-                        CONF_DAYS, default=self._config_entry.data.get(CONF_DAYS, DEFAULT_DAYS)
+                        CONF_DAYS,
+                        default=self._config_entry.options.get(CONF_DAYS, DEFAULT_DAYS),
                     ): vol.All(vol.Coerce(int), vol.Range(min=1, max=14)),
                 }
             ),
