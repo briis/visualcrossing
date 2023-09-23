@@ -81,7 +81,6 @@ def format_condition(condition: str) -> str:
 class VCWeather(SingleCoordinatorWeatherEntity[VCDataUpdateCoordinator]):
     """Implementation of a Visual Crossing weather condition."""
 
-
     _attr_attribution = (
         "Weather Data delivered by Visual Crossing"
     )
@@ -174,6 +173,7 @@ class VCWeather(SingleCoordinatorWeatherEntity[VCDataUpdateCoordinator]):
 
     @property
     def extra_state_attributes(self):
+        """Return non standard attributes."""
         return {
             ATTR_LAST_UPDATED: self.coordinator.data.current_weather_data.update_time,
         }

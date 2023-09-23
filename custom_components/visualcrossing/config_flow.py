@@ -15,7 +15,7 @@ from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
-from pyVisualCrossing import VisualCrossing, ForecastData
+from pyVisualCrossing import VisualCrossing
 
 from .const import (
     DEFAULT_DAYS,
@@ -48,7 +48,6 @@ class VCHandler(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is None:
             return await self._show_setup_form(user_input)
 
-        errors = {}
         session = async_create_clientsession(self.hass)
 
         try:
@@ -60,10 +59,10 @@ class VCHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 session=session,
             )
 
-            data: ForecastData = await vc_api.async_fetch_data()
+            await vc_api.async_fetch_data()
 
-        except:
-            return await self._show_setup_form(errors)
+        except Exception as err:
+            return await self._show_setup_form(err)
 
         await self.async_set_unique_id(
             f"{user_input[CONF_LATITUDE]}-{user_input[CONF_LONGITUDE]}"
