@@ -27,7 +27,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.util.unit_system import METRIC_SYSTEM
 
 from . import VCDataUpdateCoordinator
-from .const import CONDITIONS_MAP, DOMAIN
+from .const import ATTR_LAST_UPDATED, CONDITIONS_MAP, DOMAIN
 
 DEFAULT_NAME = "Visual Crossing Weather"
 
@@ -171,6 +171,12 @@ class VCWeather(SingleCoordinatorWeatherEntity[VCDataUpdateCoordinator]):
     def native_visibility(self) -> float | None:
         """Return the visibility."""
         return self.coordinator.data.current_weather_data.visibility
+
+    @property
+    def extra_state_attributes(self):
+        return {
+            ATTR_LAST_UPDATED: self.coordinator.data.current_weather_data.update_time,
+        }
 
     def _forecast(self, hourly: bool) -> list[Forecast] | None:
         """Return the forecast array."""

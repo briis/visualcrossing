@@ -81,7 +81,7 @@ class VCDataUpdateCoordinator(DataUpdateCoordinator["VCWeatherData"]):
         self.weather = VCWeatherData(hass, config_entry.data, config_entry.options)
         self.weather.initialize_data()
 
-        update_interval = timedelta(minutes=randrange(31, 35))
+        update_interval = timedelta(minutes=randrange(31, 32))
 
         super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=update_interval)
 
