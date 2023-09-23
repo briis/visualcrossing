@@ -1,0 +1,35 @@
+{
+    "config": {
+        "abort": {
+            "unique_id": "This Location has already been configured."
+        },
+        "error": {
+            "wrong_station_id": "The Station Id entered is not correct.",
+            "invalid_data": "The data returned from WeatherFlow is invalid.",
+            "wrong_token": "The Api Token entered is not correct.",
+            "bad_request": "An unknown error occurred when retrieving data."
+        },
+        "step": {
+            "user": {
+                "description": "Set up Visual Crossing Weather",
+                "title": "Visual Crossing",
+                "data": {
+                    "name": "Location Name",
+                    "api_key": "Visual Crossing API Key",
+                    "latitude": "Latitude",
+                    "longitude": "Longitude"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "name": "Location Name",
+                    "days": "Number of forecast days. (Default: 7, min: 1, max: 14"
+                }
+            }
+        }
+    }
+}
