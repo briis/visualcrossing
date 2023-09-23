@@ -27,7 +27,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.util.unit_system import METRIC_SYSTEM
 
 from . import VCDataUpdateCoordinator
-from .const import ATTR_LAST_UPDATED, CONDITIONS_MAP, DOMAIN
+from .const import ATTR_DESCRIPTION, ATTR_LAST_UPDATED, CONDITIONS_MAP, DOMAIN
 
 DEFAULT_NAME = "Visual Crossing Weather"
 
@@ -175,6 +175,7 @@ class VCWeather(SingleCoordinatorWeatherEntity[VCDataUpdateCoordinator]):
     def extra_state_attributes(self):
         """Return non standard attributes."""
         return {
+            ATTR_DESCRIPTION: self.coordinator.data.current_weather_data.description,
             ATTR_LAST_UPDATED: self.coordinator.data.current_weather_data.update_time,
         }
 

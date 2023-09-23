@@ -7,6 +7,7 @@ from typing import Any
 from homeassistant import config_entries
 from homeassistant.const import (
     CONF_API_KEY,
+    CONF_LANGUAGE,
     CONF_LATITUDE,
     CONF_LONGITUDE,
     CONF_NAME,
@@ -79,6 +80,7 @@ class VCHandler(config_entries.ConfigFlow, domain=DOMAIN):
             },
             options={
                 CONF_DAYS: DEFAULT_DAYS,
+                CONF_LANGUAGE: self.hass.config.language,
             },
         )
 
@@ -124,6 +126,10 @@ class VCOptionsFlowHandler(config_entries.OptionsFlow):
                     vol.Required(
                         CONF_NAME,
                         default=self._config_entry.data.get(CONF_NAME, DEFAULT_NAME),
+                    ): str,
+                    vol.Optional(
+                        CONF_LANGUAGE,
+                        default=self._config_entry.options.get(CONF_LANGUAGE, self.hass.config.language),
                     ): str,
                     vol.Optional(
                         CONF_DAYS,

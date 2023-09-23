@@ -19,6 +19,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     Platform,
     CONF_API_KEY,
+    CONF_LANGUAGE,
     CONF_LATITUDE,
     CONF_LONGITUDE,
     EVENT_CORE_CONFIG_UPDATE,
@@ -139,6 +140,7 @@ class VCWeatherData:
             self._config[CONF_LATITUDE],
             self._config[CONF_LONGITUDE],
             days=self._options[CONF_DAYS],
+            language=self._options[CONF_LANGUAGE],
             session=async_get_clientsession(self.hass),
         )
 

@@ -14,6 +14,7 @@ from homeassistant.components.weather import (
     ATTR_CONDITION_WINDY,
 )
 
+ATTR_DESCRIPTION = "description"
 ATTR_LAST_UPDATED = "last_updated"
 
 CONF_DAYS = "days"

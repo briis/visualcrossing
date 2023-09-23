@@ -1,0 +1,34 @@
+{
+    "config": {
+        "abort": {
+            "unique_id": "Denne lokation er allerede konfigureret."
+        },
+        "error": {
+            "invalid_key": "API nøglen er ikke korrekt.",
+            "unknown": "Der opstod en uventet fejl."
+        },
+        "step": {
+            "user": {
+                "description": "Konfigurer Visual Crossing Vejr",
+                "title": "Visual Crossing",
+                "data": {
+                    "name": "Lokations navn",
+                    "api_key": "Visual Crossing API nøgle",
+                    "latitude": "Latitude",
+                    "longitude": "Longitude"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "name": "Lokations navn",
+                    "language": "Sprog der anvendes ved vejr beskrivelsen",
+                    "days": "Antal dage for vejrudsigten. (Standard: 7, min: 1, maks: 14)"
+                }
+            }
+        }
+    }
+}
