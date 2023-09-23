@@ -4,8 +4,10 @@
             "unique_id": "Denne lokation er allerede konfigureret."
         },
         "error": {
-            "invalid_key": "API nøglen er ikke korrekt.",
-            "unknown": "Der opstod en uventet fejl."
+            "unauthorized": "API nøglen er ikke korrekt eller din konto er inaktiv eller deaktiveret",
+            "bad_request": "Forespørgslen er ikke gyldig. En parameter er ikke korrekt",
+            "server_error": "Visual Crossing serverne har en intern fejl",
+            "too_many": "For mange daglige forespørgsler for den aktuelle plan"
         },
         "step": {
             "user": {

@@ -4,8 +4,10 @@
             "unique_id": "This Location has already been configured."
         },
         "error": {
-            "invalid_key": "The API Key is not accepted.",
-            "unknown": "An unknown error occurred when retrieving data."
+            "unauthorized": "The API key is incorrect or your account status is inactive or disabled",
+            "bad_request": "Requests is invalid in some way (invalid dates, bad location parameter etc)",
+            "server_error": "Visual Crossing servers encounter an unexpected error",
+            "too_many": "Too many daily request for the current plan"
         },
         "step": {
             "user": {

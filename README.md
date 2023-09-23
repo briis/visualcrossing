@@ -5,7 +5,7 @@ This integration adds a Weather entity to Home Assistant utilizing the Weather A
 TODO:
 - ~~Make Icon mapping, from Visual Crossing to Home Assistant~~
 - Update this file with more Information
-- Implement more detailed error handling, to ensure users know why things go wrong if they go wrong.
+- ~~Implement more detailed error handling, to ensure users know why things go wrong if they go wrong.~~
 - ~~Add images to Home Assistant~~
 - ~~Implement Number of Days option when retrieving forecast records~~
 - ~~When changing config options, these are not reflected. Need to check for options instead of data~~

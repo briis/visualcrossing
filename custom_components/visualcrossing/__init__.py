@@ -13,6 +13,10 @@ from pyVisualCrossing import (
     ForecastData,
     ForecastDailyData,
     ForecastHourlyData,
+    VisualCrossingTooManyRequests,
+    VisualCrossingBadRequest,
+    VisualCrossingInternalServerError,
+    VisualCrossingUnauthorized,
 )
 
 from homeassistant.config_entries import ConfigEntry
@@ -25,7 +29,7 @@ from homeassistant.const import (
     EVENT_CORE_CONFIG_UPDATE,
 )
 from homeassistant.core import Event, HomeAssistant
-from homeassistant.exceptions import HomeAssistantError
+from homeassistant.exceptions import HomeAssistantError, ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
@@ -149,7 +153,22 @@ class VCWeatherData:
     async def fetch_data(self) -> Self:
         """Fetch data from API - (current weather and forecast)."""
         _LOGGER.debug("Refreshing Weather Data from Visual Crossing")
-        resp: ForecastData = await self._weather_data.async_fetch_data()
+        try:
+            resp: ForecastData = await self._weather_data.async_fetch_data()
+        except VisualCrossingUnauthorized as notreadyerror:
+            _LOGGER.debug(notreadyerror)
+            raise ConfigEntryNotReady from notreadyerror
+        except VisualCrossingBadRequest as err:
+            _LOGGER.debug(err)
+            return False
+        except VisualCrossingInternalServerError as notreadyerror:
+            _LOGGER.debug(notreadyerror)
+            raise ConfigEntryNotReady from notreadyerror
+        except VisualCrossingTooManyRequests as err:
+            _LOGGER.debug(err)
+            return False
+
+
         if not resp:
             raise CannotConnect()
         self.current_weather_data = resp

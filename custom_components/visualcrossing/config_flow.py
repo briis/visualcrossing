@@ -16,7 +16,13 @@ from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
-from pyVisualCrossing import VisualCrossing
+from pyVisualCrossing import (
+    VisualCrossing,
+    VisualCrossingBadRequest,
+    VisualCrossingInternalServerError,
+    VisualCrossingTooManyRequests,
+    VisualCrossingUnauthorized,
+)
 
 from .const import (
     DEFAULT_DAYS,
@@ -45,6 +51,7 @@ class VCHandler(config_entries.ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         """Handle a flow initialized by the user."""
+        errors = {}
 
         if user_input is None:
             return await self._show_setup_form(user_input)
@@ -62,8 +69,22 @@ class VCHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
             await vc_api.async_fetch_data()
 
-        except Exception as err:
-            return await self._show_setup_form(err)
+        except VisualCrossingUnauthorized as err:
+            _LOGGER.debug(err)
+            errors["base"] = "unauthorized"
+            return await self._show_setup_form(errors)
+        except VisualCrossingBadRequest as err:
+            _LOGGER.debug(err)
+            errors["base"] = "bad_request"
+            return await self._show_setup_form(errors)
+        except VisualCrossingInternalServerError as err:
+            _LOGGER.debug(err)
+            errors["base"] = "server_error"
+            return await self._show_setup_form(errors)
+        except VisualCrossingTooManyRequests as err:
+            _LOGGER.debug(err)
+            errors["base"] = "too_many"
+            return await self._show_setup_form(errors)
 
         await self.async_set_unique_id(
             f"{user_input[CONF_LATITUDE]}-{user_input[CONF_LONGITUDE]}"
