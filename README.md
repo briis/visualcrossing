@@ -14,8 +14,9 @@
 
 The Visual Crossing integration adds support for retrieving Current Weather data and Daily/Hourly Weather data from the company [Visual Crossing](https://www.visualcrossing.com/)
 
+You must have an account with Visual Crossing to use this API, buut they have a [*Free Plan*](https://www.visualcrossing.com/sign-up) you can sign up for that allows up to 1000 daily calls to the API. That is more than sufficient for this integration, that by default will update every 30-35 minutes. You can even have more than one instance installed without hitting the limit.
 
-**This integration will set up the following platforms.**
+#### This integration will set up the following platforms.
 
 Platform | Description
 -- | --

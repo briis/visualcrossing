@@ -8,12 +8,15 @@
 ![Project Maintenance][maintenance-shield]
 [![Community Forum][forum-shield]][forum]
 
-<div style="display: flex; align-items: center; margin-bottom: 20px">
-    <img style="vertical-align: middle; padding-right: 5px" src="https://github.com/briis/visualcrossing/blob/main/images/icon_small.png?raw=true">
-    <span>The Visual Crossing integration adds support for retrieving Current Weather data and Daily/Hourly Weather data from the company <a href="https://www.visualcrossing.com/">Visual Crossing</a></span>
-</div>
+<p align="center">
+  <img width="128" height="128" src="https://github.com/briis/visualcrossing/blob/main/images/icon.png?raw=true">
+</p>
 
-**This integration will set up the following platforms.**
+The Visual Crossing integration adds support for retrieving Current Weather data and Daily/Hourly Weather data from the company [Visual Crossing](https://www.visualcrossing.com/)
+
+You must have an account with Visual Crossing to use this API, buut they have a [*Free Plan*](https://www.visualcrossing.com/sign-up) you can sign up for that allows up to 1000 daily calls to the API. That is more than sufficient for this integration, that by default will update every 30-35 minutes. You can even have more than one instance installed without hitting the limit.
+
+#### This integration will set up the following platforms.
 
 Platform | Description
 -- | --
