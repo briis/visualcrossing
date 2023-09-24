@@ -4,6 +4,7 @@ on:
   push:
     paths-ignore:
       - '**/README.md'
+      - '**/info.md'
       - '**/CHANGELOG.md'
   pull_request:
   schedule:
