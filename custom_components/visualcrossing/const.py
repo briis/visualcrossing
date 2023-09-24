@@ -20,6 +20,7 @@ ATTR_LAST_UPDATED = "last_updated"
 CONF_DAYS = "days"
 
 DEFAULT_DAYS = 7
+DEFAULT_LANGUAGE = "en"
 DEFAULT_NAME = "Home"
 DOMAIN = "visualcrossing"
 

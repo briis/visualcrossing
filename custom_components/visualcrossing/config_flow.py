@@ -22,10 +22,12 @@ from pyVisualCrossing import (
     VisualCrossingInternalServerError,
     VisualCrossingTooManyRequests,
     VisualCrossingUnauthorized,
+    SUPPORTED_LANGUAGES,
 )
 
 from .const import (
     DEFAULT_DAYS,
+    DEFAULT_LANGUAGE,
     DEFAULT_NAME,
     DOMAIN,
     CONF_DAYS,
@@ -101,7 +103,7 @@ class VCHandler(config_entries.ConfigFlow, domain=DOMAIN):
             },
             options={
                 CONF_DAYS: DEFAULT_DAYS,
-                CONF_LANGUAGE: self.hass.config.language,
+                CONF_LANGUAGE: DEFAULT_LANGUAGE,
             },
         )
 
@@ -150,8 +152,8 @@ class VCOptionsFlowHandler(config_entries.OptionsFlow):
                     ): str,
                     vol.Optional(
                         CONF_LANGUAGE,
-                        default=self._config_entry.options.get(CONF_LANGUAGE, self.hass.config.language),
-                    ): str,
+                        default=self._config_entry.options.get(CONF_LANGUAGE, DEFAULT_LANGUAGE),
+                    ): vol.In(SUPPORTED_LANGUAGES),
                     vol.Optional(
                         CONF_DAYS,
                         default=self._config_entry.options.get(CONF_DAYS, DEFAULT_DAYS),
