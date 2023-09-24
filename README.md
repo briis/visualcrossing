@@ -8,7 +8,7 @@
 ![Project Maintenance][maintenance-shield]
 [![Community Forum][forum-shield]][forum]
 
-<div style="display: flex; align-items: center; margin-bottom: 20px">
+<div style="display: flex; align-items: center; margin-bottom: 20px;">
     <img style="vertical-align: middle; padding-right: 5px" src="https://github.com/briis/visualcrossing/blob/main/images/icon_small.png?raw=true">
     <span>The Visual Crossing integration adds support for retrieving Current Weather data and Daily/Hourly Weather data from the company <a href="https://www.visualcrossing.com/">Visual Crossing</a></span>
 </div>
