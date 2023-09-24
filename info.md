@@ -8,7 +8,10 @@
 ![Project Maintenance][maintenance-shield]
 [![Community Forum][forum-shield]][forum]
 
-![Visual Crossing Logo](https://github.com/briis/visualcrossing/blob/main/images/icon_small.png?raw=true) The Visual Crossing integration adds support for retrieving Current Weather data and Daily/Hourly Weather data from the company [Visual Crossing](https://www.visualcrossing.com/)
+<div style="display: flex; align-items: center; margin-bottom: 20px">
+    <img style="vertical-align: middle; padding-right: 5px" src="https://github.com/briis/visualcrossing/blob/main/images/icon_small.png?raw=true">
+    <span>The Visual Crossing integration adds support for retrieving Current Weather data and Daily/Hourly Weather data from the company <a href="https://www.visualcrossing.com/">Visual Crossing</a></span>
+</div>
 
 **This integration will set up the following platforms.**
 
@@ -16,8 +19,7 @@ Platform | Description
 -- | --
 `weather` | A Home Assistant `weather` entity, with current data, daily- and hourly forecast data.
 
-Minimum required version of Home Assistant is **2023.9.0** as this integration uses the new Weather entity forecast types.
-
+**Home Assistant version:** Minimum required version of Home Assistant is **2023.9.0** as this integration uses the new Weather entity forecast types.
 
 ## Configuration
 
@@ -48,3 +50,17 @@ Once installed you can change some parameters, bly clicking on the *CONFIGURE* b
   | --------- | -------- | ------------- | ----------- |
   | `Days` | No | 7 | Number of days to retrieve forecast data for. Minimum is 1 and maximum is 14. Data is retieved for the current day plus this number of days. |
   | `Language` | No | HA Language | A language code, that is only used to retrieve a long weather description you will find as an attribute on the weather entity. |
+
+
+***
+
+[commits-shield]: https://img.shields.io/github/commit-activity/y/briis/visualcrossing.svg?style=for-the-badge
+[commits]: https://github.com/briis/visualcrossing/commits/main
+[hacs]: https://github.com/hacs/integration
+[hacsbadge]: https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge
+[forum-shield]: https://img.shields.io/badge/community-forum-brightgreen.svg?style=for-the-badge
+[forum]: https://community.home-assistant.io/
+[license-shield]: https://img.shields.io/github/license/briis/visualcrossing.svg?style=for-the-badge
+[maintenance-shield]: https://img.shields.io/badge/maintainer-Bjarne%20Riis%20%40briis-blue.svg?style=for-the-badge
+[releases-shield]: https://img.shields.io/github/release/briis/visualcrossing.svg?style=for-the-badge
+[releases]: https://github.com/briis/visualcrossing/releases
