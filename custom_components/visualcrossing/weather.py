@@ -24,6 +24,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.util.dt import as_utc
 from homeassistant.util.unit_system import METRIC_SYSTEM
 
 from . import VCDataUpdateCoordinator
@@ -186,7 +187,7 @@ class VCWeather(SingleCoordinatorWeatherEntity[VCDataUpdateCoordinator]):
         if hourly:
             for item in self.coordinator.data.hourly_forecast:
                 condition = None if item.icon is None else format_condition(item.icon)
-                datetime = item.datetime.isoformat()
+                datetime = as_utc(item.datetime).isoformat()
                 humidity = item.humidity
                 precipitation_probability = item.precipitation_probability
                 native_precipitation = item.precipitation
@@ -216,7 +217,7 @@ class VCWeather(SingleCoordinatorWeatherEntity[VCDataUpdateCoordinator]):
         else:
             for item in self.coordinator.data.daily_forecast:
                 condition = None if item.icon is None else format_condition(item.icon)
-                datetime = item.datetime.isoformat()
+                datetime = as_utc(item.datetime).isoformat()
                 precipitation_probability = item.precipitation_probability
                 native_temperature = item.temperature
                 native_templow = item.temp_low
