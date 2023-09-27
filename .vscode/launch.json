@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Debug WeatherFlow Forecast",
+            "name": "Python: Debug Visual Crossing Weather",
             "type": "python",
             "request": "attach",
             "justMyCode": false,
@@ -13,7 +13,7 @@
             "host": "localhost",
             "pathMappings": [
                 {
-                    "localRoot": "/workspaces/weatherflow_forecast",
+                    "localRoot": "/workspaces/visualcrossing",
                     "remoteRoot": "."
                 }
             ]
