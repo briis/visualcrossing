@@ -1,6 +1,8 @@
 """Support for WeatherFlow Forecast weather service."""
 from __future__ import annotations
 
+import logging
+
 from types import MappingProxyType
 from typing import TYPE_CHECKING, Any
 
@@ -31,6 +33,8 @@ from . import VCDataUpdateCoordinator
 from .const import ATTR_DESCRIPTION, ATTR_LAST_UPDATED, CONDITIONS_MAP, DOMAIN
 
 DEFAULT_NAME = "Visual Crossing Weather"
+
+_LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(
         hass: HomeAssistant,
@@ -187,7 +191,8 @@ class VCWeather(SingleCoordinatorWeatherEntity[VCDataUpdateCoordinator]):
         if hourly:
             for item in self.coordinator.data.hourly_forecast:
                 condition = None if item.icon is None else format_condition(item.icon)
-                datetime = as_utc(item.datetime).isoformat()
+                _LOGGER.debug(item.datetime.isoformat())
+                datetime = item.datetime.isoformat()
                 humidity = item.humidity
                 precipitation_probability = item.precipitation_probability
                 native_precipitation = item.precipitation
@@ -217,7 +222,7 @@ class VCWeather(SingleCoordinatorWeatherEntity[VCDataUpdateCoordinator]):
         else:
             for item in self.coordinator.data.daily_forecast:
                 condition = None if item.icon is None else format_condition(item.icon)
-                datetime = as_utc(item.datetime).isoformat()
+                datetime = item.datetime.isoformat()
                 precipitation_probability = item.precipitation_probability
                 native_temperature = item.temperature
                 native_templow = item.temp_low
