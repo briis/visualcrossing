@@ -26,7 +26,6 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.util.dt import as_utc
 from homeassistant.util.unit_system import METRIC_SYSTEM
 
 from . import VCDataUpdateCoordinator
@@ -181,7 +180,7 @@ class VCWeather(SingleCoordinatorWeatherEntity[VCDataUpdateCoordinator]):
         """Return non standard attributes."""
         return {
             ATTR_DESCRIPTION: self.coordinator.data.current_weather_data.description,
-            ATTR_LAST_UPDATED: self.coordinator.data.current_weather_data.update_time,
+            ATTR_LAST_UPDATED: self.coordinator.data.current_weather_data.datetime.isoformat(),
         }
 
     def _forecast(self, hourly: bool) -> list[Forecast] | None:
