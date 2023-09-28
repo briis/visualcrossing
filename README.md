@@ -33,7 +33,7 @@ This Integration is not yet part of the default HACS store, but can still be ins
 - Close the dialog box, and you should now see the Visual Crossing integration show up in HACS as a new integration.
 - Click on it and select the DOWNLOAD button in the lower right corner.
 
-After the installation of the files, you must restart Home Assistant, or else you will not be able to add WeatherFlow Weather from the Integration Page.
+After the installation of the files, you must restart Home Assistant, or else you will not be able to add Visual Crossing from the Integration Page.
 
 If you are not familiar with HACS, or haven't installed it, I would recommend to [look through the HACS documentation](https://hacs.xyz/), before continuing. Even though you can install the Integration manually, I would recommend using HACS, as you would always be reminded when a new release is published.
 
@@ -77,9 +77,7 @@ Once installed you can change some parameters, bly clicking on the *CONFIGURE* b
   | `Days` | No | 7 | Number of days to retrieve forecast data for. Minimum is 1 and maximum is 14. Data is retieved for the current day plus this number of days. |
   | `Language` | No | HA Language | A language code, that is only used to retrieve a long weather description you will find as an attribute on the weather entity. |
 
-
-
-## Contributions are welcome!
+## Contributions are welcome
 
 If you want to contribute to this please read the [Contribution guidelines](CONTRIBUTING.md)
 
