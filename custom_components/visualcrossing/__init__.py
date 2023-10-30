@@ -1,7 +1,6 @@
 """Visual Crossing Weather Platform."""
 from __future__ import annotations
 
-from collections.abc import Callable
 from datetime import timedelta
 import logging
 from random import randrange
@@ -26,9 +25,8 @@ from homeassistant.const import (
     CONF_LANGUAGE,
     CONF_LATITUDE,
     CONF_LONGITUDE,
-    EVENT_CORE_CONFIG_UPDATE,
 )
-from homeassistant.core import Event, HomeAssistant
+from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError, ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
