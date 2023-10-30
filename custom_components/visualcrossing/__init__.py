@@ -82,7 +82,7 @@ class VCDataUpdateCoordinator(DataUpdateCoordinator["VCWeatherData"]):
 
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry) -> None:
         """Initialize global Visual Crossing data updater."""
-        self._unsub_track_home: Callable[[], None] | None = None
+        # self._unsub_track_home: Callable[[], None] | None = None
         self.weather = VCWeatherData(hass, config_entry.data, config_entry.options)
         self.weather.initialize_data()
 
@@ -97,26 +97,26 @@ class VCDataUpdateCoordinator(DataUpdateCoordinator["VCWeatherData"]):
         except Exception as err:
             raise UpdateFailed(f"Update failed: {err}") from err
 
-    def track_home(self) -> None:
-        """Start tracking changes to HA home setting."""
-        if self._unsub_track_home:
-            return
+    # def track_home(self) -> None:
+    #     """Start tracking changes to HA home setting."""
+    #     if self._unsub_track_home:
+    #         return
 
-        async def _async_update_weather_data(_event: Event | None = None) -> None:
-            """Update weather data."""
-            if self.weather.initialize_data():
-                _LOGGER.debug("Refreshing called")
-                await self.async_refresh()
+    #     async def _async_update_weather_data(_event: Event | None = None) -> None:
+    #         """Update weather data."""
+    #         if self.weather.initialize_data():
+    #             _LOGGER.debug("Refreshing called")
+    #             await self.async_refresh()
 
-        self._unsub_track_home = self.hass.bus.async_listen(
-            EVENT_CORE_CONFIG_UPDATE, _async_update_weather_data
-        )
+    #     self._unsub_track_home = self.hass.bus.async_listen(
+    #         EVENT_CORE_CONFIG_UPDATE, _async_update_weather_data
+    #     )
 
-    def untrack_home(self) -> None:
-        """Stop tracking changes to HA home setting."""
-        if self._unsub_track_home:
-            self._unsub_track_home()
-            self._unsub_track_home = None
+    # def untrack_home(self) -> None:
+    #     """Stop tracking changes to HA home setting."""
+    #     if self._unsub_track_home:
+    #         self._unsub_track_home()
+    #         self._unsub_track_home = None
 
 
 class VCWeatherData:
