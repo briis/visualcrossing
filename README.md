@@ -73,7 +73,7 @@ Once installed you can change some parameters, bly clicking on the *CONFIGURE* b
 
   | Parameter | Required | Default Value | Description |
   | --------- | -------- | ------------- | ----------- |
-  | `Days` | No | 7 | Number of days to retrieve forecast data for. Minimum is 1 and maximum is 14. Data is retieved for the current day plus this number of days. |
+  | `Days` | No | 7 | Number of days to retrieve forecast data for. Minimum is 1 and maximum is 14. Data is retrieved for the current day plus this number of days. |
   | `Language` | No | HA Language | A language code, that is only used to retrieve a long weather description you will find as an attribute on the weather entity. |
 
 ## Contributions are welcome
