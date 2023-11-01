@@ -246,10 +246,10 @@ class VCWeather(SingleCoordinatorWeatherEntity[VCDataUpdateCoordinator]):
     # For backwards compatability, uncomment the below.
     # Will stop working with HA 2024.3
 
-    @property
-    def forecast(self) -> list[Forecast] | None:
-        """Return the forecast array."""
-        return self._forecast(False)
+    # @property
+    # def forecast(self) -> list[Forecast] | None:
+    #     """Return the forecast array."""
+    #     return self._forecast(False)
 
     @callback
     def _async_forecast_daily(self) -> list[Forecast] | None:
