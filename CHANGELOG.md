@@ -1,3 +1,11 @@
+## Release 0.1.6
+
+**Date**: `2023-XX-XX`
+
+### Changes
+
+- Added missing weather condition states. `snow-showers-day` and `snow-showers-night`
+
 ## Release 0.1.5
 
 **Date**: `2023-11-01`
