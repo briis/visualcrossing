@@ -195,6 +195,7 @@ class VCWeather(SingleCoordinatorWeatherEntity[VCDataUpdateCoordinator]):
                 humidity = item.humidity
                 precipitation_probability = item.precipitation_probability
                 native_precipitation = item.precipitation
+                cloud_cover = item.cloud_cover
                 native_pressure = item.pressure
                 native_temperature = item.temperature
                 native_apparent_temperature = item.apparent_temperature
@@ -209,6 +210,7 @@ class VCWeather(SingleCoordinatorWeatherEntity[VCDataUpdateCoordinator]):
                     "humidity": humidity,
                     "precipitation_probability": precipitation_probability,
                     "native_precipitation": native_precipitation,
+                    "cloud_coverage": cloud_cover,
                     "native_pressure": native_pressure,
                     "native_temperature": native_temperature,
                     "native_apparent_temperature": native_apparent_temperature,
@@ -223,6 +225,7 @@ class VCWeather(SingleCoordinatorWeatherEntity[VCDataUpdateCoordinator]):
                 condition = None if item.icon is None else format_condition(item.icon)
                 datetime = item.datetime.isoformat()
                 precipitation_probability = item.precipitation_probability
+                cloud_cover = item.cloud_cover
                 native_temperature = item.temperature
                 native_templow = item.temp_low
                 native_precipitation = item.precipitation
@@ -234,6 +237,7 @@ class VCWeather(SingleCoordinatorWeatherEntity[VCDataUpdateCoordinator]):
                     "datetime": datetime,
                     "precipitation_probability": precipitation_probability,
                     "native_precipitation": native_precipitation,
+                    "cloud_coverage": cloud_cover,
                     "native_temperature": native_temperature,
                     "native_templow": native_templow,
                     "wind_bearing": wind_bearing,
