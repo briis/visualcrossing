@@ -1,3 +1,12 @@
+## Release 0.1.7
+
+**Date**: `2025-06-10`
+
+### Changes
+
+- Added Cloud Coverage to Forecast. Thank you to @realericmc.
+
+
 ## Release 0.1.6
 
 **Date**: `2023-11-18`
