@@ -11,74 +11,84 @@
   <img width="128" height="128" src="https://github.com/briis/visualcrossing/blob/main/images/icon.png?raw=true">
 </p>
 
-The Visual Crossing integration adds support for retrieving Current Weather data and Daily/Hourly Weather data from the company [Visual Crossing](https://www.visualcrossing.com/)
+The Visual Crossing integration adds support for retrieving current weather data and daily/hourly forecast data from [Visual Crossing](https://www.visualcrossing.com/).
 
-You must have an account with Visual Crossing to use this API, but they have a [*Free Plan*](https://www.visualcrossing.com/sign-up) you can sign up for that allows up to 1000 daily calls to the API. That is more than sufficient for this integration, that by default will update every 30-35 minutes. You can even have more than one instance installed without hitting the limit.
+You must have an account with Visual Crossing to use this API, but they have a [*Free Plan*](https://www.visualcrossing.com/sign-up) you can sign up for that allows up to 1000 API calls per day. That is more than sufficient for this integration, which by default updates every 31 minutes. You can even have more than one instance installed without hitting the limit.
 
-#### This integration will set up the following platforms.
+## Platforms
 
 Platform | Description
 -- | --
-`weather` | A Home Assistant `weather` entity, with current data, daily- and hourly forecast data.
+`weather` | A Home Assistant `weather` entity with current conditions, daily forecast, and hourly forecast data.
 
-Minimum required version of Home Assistant is **2023.9.0** as this integration uses the new Weather entity forecast types.
+Minimum required version of Home Assistant is **2023.9.0**, as this integration uses the Weather entity forecast types introduced in that release.
 
 ## Installation through HACS (Recommended Method)
 
-This Integration is not yet part of the default HACS store, but can still be installed through HACS.
+This integration is not yet part of the default HACS store, but can still be installed through HACS.
 
-- Open HACS, click integrations, and then in the upper right corner click on the three dots.
-- Select *Custom Repositories* and in the bottom add `https://github.com/briis/visualcrossing` to the *Repository* field and under *Category* select *Integration*.
-- Close the dialog box, and you should now see the Visual Crossing integration show up in HACS as a new integration.
-- Click on it and select the DOWNLOAD button in the lower right corner.
+- Open HACS, click **Integrations**, and then click the three dots in the upper right corner.
+- Select *Custom Repositories*, add `https://github.com/briis/visualcrossing` in the *Repository* field, and select *Integration* under *Category*.
+- Close the dialog box — the Visual Crossing integration will now appear in HACS as a new integration.
+- Click on it and select the **DOWNLOAD** button in the lower right corner.
 
-After the installation of the files, you must restart Home Assistant, or else you will not be able to add Visual Crossing from the Integration Page.
+After the files are installed, you must restart Home Assistant before Visual Crossing will appear on the Integration page.
 
-If you are not familiar with HACS, or haven't installed it, I would recommend to [look through the HACS documentation](https://hacs.xyz/), before continuing. Even though you can install the Integration manually, I would recommend using HACS, as you would always be reminded when a new release is published.
+If you are not familiar with HACS, or haven't installed it, [look through the HACS documentation](https://hacs.xyz/) before continuing. Even though you can install the integration manually, using HACS is recommended since it will notify you whenever a new release is published.
 
 ## Manual Installation
 
-1. Using the tool of choice open the directory (folder) for your HA configuration (where you find `configuration.yaml`).
-1. If you do not have a `custom_components` directory (folder) there, you need to create it.
-1. In the `custom_components` directory (folder) create a new folder called `visualcrossing`.
-1. Download _all_ the files from the `custom_components/visualcrossing/` directory (folder) in this repository.
-1. Place the files you downloaded in the new directory (folder) you created.
-1. Restart Home Assistant
-1. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "visualcrossing"
+1. Open the directory for your HA configuration (where you find `configuration.yaml`).
+1. If you do not have a `custom_components` directory there, create it.
+1. Inside `custom_components`, create a new folder called `visualcrossing`.
+1. Download _all_ the files from the `custom_components/visualcrossing/` directory in this repository.
+1. Place the downloaded files in the folder you just created.
+1. Restart Home Assistant.
+1. In the HA UI go to **Settings** → **Integrations**, click **+**, and search for *Visual Crossing*.
 
 ## Configuration
 
-To add Visual Crossing Weather to your installation, do the following:
+To add Visual Crossing Weather to your installation:
 
-- Go to Configuration and Integrations
-- Click the + ADD INTEGRATION button in the lower right corner.
-- Search for *Visual Crossing** and click the integration.
-- When loaded, there will be a configuration box, where you must enter:
+- Go to **Settings** → **Integrations**.
+- Click the **+ ADD INTEGRATION** button in the lower right corner.
+- Search for *Visual Crossing* and click the integration.
+- Fill in the configuration fields:
 
   | Parameter | Required | Default Value | Description |
   | --------- | -------- | ------------- | ----------- |
   | `Location Name` | Yes | Home | A name to identify this instance of Visual Crossing |
-  | `API Key` | Yes | None | A Key you get by creating a [Free Plan](https://www.visualcrossing.com/sign-up) with Visual Crossing |
+  | `API Key` | Yes | — | Your API key from [Visual Crossing](https://www.visualcrossing.com/sign-up) |
   | `Latitude` | Yes | HA Latitude | The latitude of the location you want data for |
   | `Longitude` | Yes | HA Longitude | The longitude of the location you want data for |
-- Click on SUBMIT to save your data. If all goes well you should now have a new Weather entity with data from Visual Crossing
 
-  Visual Crossing will get data from the official weather station closest to the Latitude and Longitude you are supplying.
+- Click **SUBMIT**. If all goes well you will have a new Weather entity with data from Visual Crossing.
 
-You can configure more than 1 instance of the Integration by using a different Latitude and Longitude.
+Visual Crossing retrieves data from the official weather station closest to the latitude and longitude you supply.
+
+You can configure more than one instance of the integration by using a different latitude and longitude.
 
 ### Changing parameters
 
-Once installed you can change some parameters, bly clicking on the *CONFIGURE* button on the Integration.
+Once installed, you can change additional parameters by clicking the **CONFIGURE** button on the integration card.
 
   | Parameter | Required | Default Value | Description |
   | --------- | -------- | ------------- | ----------- |
-  | `Days` | No | 7 | Number of days to retrieve forecast data for. Minimum is 1 and maximum is 14. Data is retrieved for the current day plus this number of days. |
-  | `Language` | No | HA Language | A language code, that is only used to retrieve a long weather description you will find as an attribute on the weather entity. |
+  | `Days` | No | 7 | Number of forecast days to retrieve (1–14). Data is retrieved for today plus this many additional days. |
+  | `Language` | No | en (English) | Language code used to retrieve the long weather description available as an attribute on the weather entity. |
+
+### Extra state attributes
+
+The `weather` entity exposes the following additional attributes beyond the standard Home Assistant weather attributes:
+
+| Attribute | Description |
+| --------- | ----------- |
+| `description` | A human-readable long-form weather description in the configured language. |
+| `last_updated` | The timestamp of the weather observation returned by the API. |
 
 ## Contributions are welcome
 
-If you want to contribute to this please read the [Contribution guidelines](CONTRIBUTING.md)
+If you want to contribute to this please read the [Contribution guidelines](CONTRIBUTING.md).
 
 ***
 
