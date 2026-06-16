@@ -1,3 +1,13 @@
+## Release 0.1.8
+
+**Date**: `2026-06-16`
+
+### Changes
+
+- Fixing several python errors, after upgrading dev environment
+- Updating Dev Environment to the latest Python and Home Assistant versions
+- Updating documentation
+
 ## Release 0.1.7
 
 **Date**: `2025-06-10`
