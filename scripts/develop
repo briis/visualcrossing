@@ -16,5 +16,9 @@ fi
 ## without resulting to symlinks.
 export PYTHONPATH="${PYTHONPATH}:${PWD}/custom_components"
 
+# Copy Lovelace card assets to config/www so they are served at /local/
+mkdir -p "${PWD}/config/www"
+cp -r "${PWD}/custom_components/pollen_dk/www/." "${PWD}/config/www/"
+
 # Start Home Assistant
 hass --config "${PWD}/config" --debug
