@@ -16,9 +16,6 @@ from homeassistant.const import (
     CONF_NAME,
 )
 from homeassistant.core import callback
-
-if TYPE_CHECKING:
-    from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from pyVisualCrossing import (
     SUPPORTED_LANGUAGES,
@@ -36,6 +33,9 @@ from .const import (
     DEFAULT_NAME,
     DOMAIN,
 )
+
+if TYPE_CHECKING:
+    from homeassistant.data_entry_flow import FlowResult
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -68,7 +68,7 @@ class VCHandler(config_entries.ConfigFlow, domain=DOMAIN):
             vc_api = VisualCrossing(
                 user_input[CONF_API_KEY],
                 user_input[CONF_LATITUDE],
-                user_input[CONF_LATITUDE],
+                user_input[CONF_LONGITUDE],
                 days=1,
                 session=session,
             )

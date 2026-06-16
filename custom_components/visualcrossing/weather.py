@@ -54,7 +54,7 @@ async def async_setup_entry(
     name: str | None
     is_metric = hass.config.units is METRIC_SYSTEM
 
-    if (name := config_entry.data.get(CONF_NAME)) and name is None:
+    if (name := config_entry.data.get(CONF_NAME)) is None:
         name = DEFAULT_NAME
     elif TYPE_CHECKING:
         assert isinstance(name, str)  # noqa: S101

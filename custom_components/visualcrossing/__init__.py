@@ -15,12 +15,6 @@ from homeassistant.const import (
     Platform,
 )
 from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
-
-if TYPE_CHECKING:
-    from types import MappingProxyType
-
-    from homeassistant.config_entries import ConfigEntry
-    from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from pyVisualCrossing import (
@@ -35,6 +29,12 @@ from pyVisualCrossing import (
 )
 
 from .const import CONF_DAYS, DOMAIN
+
+if TYPE_CHECKING:
+    from types import MappingProxyType
+
+    from homeassistant.config_entries import ConfigEntry
+    from homeassistant.core import HomeAssistant
 
 PLATFORMS = [Platform.WEATHER]
 
@@ -138,14 +138,14 @@ class VCWeatherData:
             _LOGGER.debug(notreadyerror)
             raise ConfigEntryNotReady from notreadyerror
         except VisualCrossingBadRequest as err:
-            _LOGGER.debug(err)
-            return False
+            _LOGGER.warning(err)
+            return self
         except VisualCrossingInternalServerError as notreadyerror:
             _LOGGER.debug(notreadyerror)
             raise ConfigEntryNotReady from notreadyerror
         except VisualCrossingTooManyRequests as err:
-            _LOGGER.debug(err)
-            return False
+            _LOGGER.warning(err)
+            return self
 
         if not resp:
             raise CannotConnectError
