@@ -1,11 +1,38 @@
 
-# Loads default set of integrations. Do not remove.
-default_config:
+homeassistant:
+  debug: true
 
 # Load frontend themes from the themes folder
 frontend:
   themes: !include_dir_merge_named themes
 
+config:
+history:
+logbook:
+sun:
+input_boolean:
+input_number:
+input_select:
+input_text:
+input_button:
+input_datetime:
+timer:
+counter:
+person:
+zone:
+tag:
+webhook:
+my:
+media_source:
+schedule:
+energy:
+mobile_app:
+
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
+
+logger:
+  default: info
+  logs:
+    custom_components.visualcrossing: debug

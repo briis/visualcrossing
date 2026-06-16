@@ -1,18 +1,18 @@
 """Support for WeatherFlow Forecast weather service."""
+
 from __future__ import annotations
 
 import logging
-
-from types import MappingProxyType
 from typing import TYPE_CHECKING, Any
 
 from homeassistant.components.weather import (
     DOMAIN as WEATHER_DOMAIN,
+)
+from homeassistant.components.weather import (
     Forecast,
     SingleCoordinatorWeatherEntity,
     WeatherEntityFeature,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     CONF_LATITUDE,
     CONF_LONGITUDE,
@@ -22,11 +22,17 @@ from homeassistant.const import (
     UnitOfSpeed,
     UnitOfTemperature,
 )
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import callback
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.util.unit_system import METRIC_SYSTEM
+
+if TYPE_CHECKING:
+    from types import MappingProxyType
+
+    from homeassistant.config_entries import ConfigEntry
+    from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import VCDataUpdateCoordinator
 from .const import ATTR_DESCRIPTION, ATTR_LAST_UPDATED, CONDITIONS_MAP, DOMAIN
@@ -51,23 +57,33 @@ async def async_setup_entry(
     if (name := config_entry.data.get(CONF_NAME)) and name is None:
         name = DEFAULT_NAME
     elif TYPE_CHECKING:
-        assert isinstance(name, str)
+        assert isinstance(name, str)  # noqa: S101
 
-    entities = [VCWeather(coordinator, config_entry.data, False, name, is_metric)]
+    entities = [
+        VCWeather(
+            coordinator, config_entry.data, hourly=False, name=name, is_metric=is_metric
+        )
+    ]
 
     # Add hourly entity to legacy config entries
     if entity_registry.async_get_entity_id(
-        WEATHER_DOMAIN, DOMAIN, _calculate_unique_id(config_entry.data, True)
+        WEATHER_DOMAIN, DOMAIN, _calculate_unique_id(config_entry.data, hourly=True)
     ):
         name = f"{name} hourly"
         entities.append(
-            VCWeather(coordinator, config_entry.data, True, name, is_metric)
+            VCWeather(
+                coordinator,
+                config_entry.data,
+                hourly=True,
+                name=name,
+                is_metric=is_metric,
+            )
         )
 
     async_add_entities(entities)
 
 
-def _calculate_unique_id(config: MappingProxyType[str, Any], hourly: bool) -> str:
+def _calculate_unique_id(config: MappingProxyType[str, Any], *, hourly: bool) -> str:
     """Calculate unique ID."""
     name_appendix = ""
     if hourly:
@@ -101,13 +117,14 @@ class VCWeather(SingleCoordinatorWeatherEntity[VCDataUpdateCoordinator]):
         self,
         coordinator: VCDataUpdateCoordinator,
         config: MappingProxyType[str, Any],
+        *,
         hourly: bool,
         name: str,
         is_metric: bool,
     ) -> None:
         """Initialise the platform with a data instance and station."""
         super().__init__(coordinator)
-        self._attr_unique_id = _calculate_unique_id(config, hourly)
+        self._attr_unique_id = _calculate_unique_id(config, hourly=hourly)
         self._config = config
         self._is_metric = is_metric
         self._hourly = hourly
@@ -176,14 +193,16 @@ class VCWeather(SingleCoordinatorWeatherEntity[VCDataUpdateCoordinator]):
         return self.coordinator.data.current_weather_data.visibility
 
     @property
-    def extra_state_attributes(self):
+    def extra_state_attributes(self) -> dict[str, Any]:
         """Return non standard attributes."""
         return {
             ATTR_DESCRIPTION: self.coordinator.data.current_weather_data.description,
-            ATTR_LAST_UPDATED: self.coordinator.data.current_weather_data.datetime.isoformat(),
+            ATTR_LAST_UPDATED: (
+                self.coordinator.data.current_weather_data.datetime.isoformat()
+            ),
         }
 
-    def _forecast(self, hourly: bool) -> list[Forecast] | None:
+    def _forecast(self, *, hourly: bool) -> list[Forecast] | None:
         """Return the forecast array."""
         ha_forecast: list[Forecast] = []
 
@@ -247,20 +266,12 @@ class VCWeather(SingleCoordinatorWeatherEntity[VCDataUpdateCoordinator]):
 
         return ha_forecast
 
-    # For backwards compatability, uncomment the below.
-    # Will stop working with HA 2024.3
-
-    # @property
-    # def forecast(self) -> list[Forecast] | None:
-    #     """Return the forecast array."""
-    #     return self._forecast(False)
-
     @callback
     def _async_forecast_daily(self) -> list[Forecast] | None:
         """Return the daily forecast in native units."""
-        return self._forecast(False)
+        return self._forecast(hourly=False)
 
     @callback
     def _async_forecast_hourly(self) -> list[Forecast] | None:
         """Return the hourly forecast in native units."""
-        return self._forecast(True)
+        return self._forecast(hourly=True)

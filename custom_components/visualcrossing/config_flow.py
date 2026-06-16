@@ -1,9 +1,12 @@
 """Config flow to configure Visual Crossing component."""
+
 from __future__ import annotations
 
 import logging
+from typing import TYPE_CHECKING, Any
+
+import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
-from typing import Any
 from homeassistant import config_entries
 from homeassistant.const import (
     CONF_API_KEY,
@@ -13,24 +16,25 @@ from homeassistant.const import (
     CONF_NAME,
 )
 from homeassistant.core import callback
-from homeassistant.data_entry_flow import FlowResult
-import homeassistant.helpers.config_validation as cv
+
+if TYPE_CHECKING:
+    from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from pyVisualCrossing import (
+    SUPPORTED_LANGUAGES,
     VisualCrossing,
     VisualCrossingBadRequest,
     VisualCrossingInternalServerError,
     VisualCrossingTooManyRequests,
     VisualCrossingUnauthorized,
-    SUPPORTED_LANGUAGES,
 )
 
 from .const import (
+    CONF_DAYS,
     DEFAULT_DAYS,
     DEFAULT_LANGUAGE,
     DEFAULT_NAME,
     DOMAIN,
-    CONF_DAYS,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -91,7 +95,7 @@ class VCHandler(config_entries.ConfigFlow, domain=DOMAIN):
         await self.async_set_unique_id(
             f"{user_input[CONF_LATITUDE]}-{user_input[CONF_LONGITUDE]}"
         )
-        self._abort_if_unique_id_configured
+        self._abort_if_unique_id_configured()
 
         return self.async_create_entry(
             title=user_input[CONF_NAME],
@@ -107,7 +111,7 @@ class VCHandler(config_entries.ConfigFlow, domain=DOMAIN):
             },
         )
 
-    async def _show_setup_form(self, errors=None):
+    async def _show_setup_form(self, errors: dict | None = None) -> FlowResult:
         """Show the setup form to the user."""
         return self.async_show_form(
             step_id="user",
@@ -138,7 +142,6 @@ class VCOptionsFlowHandler(config_entries.OptionsFlow):
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         """Configure Options for WeatherFlow Forecast."""
-
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
@@ -152,7 +155,9 @@ class VCOptionsFlowHandler(config_entries.OptionsFlow):
                     ): str,
                     vol.Optional(
                         CONF_LANGUAGE,
-                        default=self._config_entry.options.get(CONF_LANGUAGE, DEFAULT_LANGUAGE),
+                        default=self._config_entry.options.get(
+                            CONF_LANGUAGE, DEFAULT_LANGUAGE
+                        ),
                     ): vol.In(SUPPORTED_LANGUAGES),
                     vol.Optional(
                         CONF_DAYS,

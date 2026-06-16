@@ -1,37 +1,40 @@
 """Visual Crossing Weather Platform."""
+
 from __future__ import annotations
 
-from datetime import timedelta
 import logging
+from datetime import timedelta
 from random import randrange
-from types import MappingProxyType
-from typing import Any, Self
+from typing import TYPE_CHECKING, Any, Self
 
-from pyVisualCrossing import (
-    VisualCrossing,
-    ForecastData,
-    ForecastDailyData,
-    ForecastHourlyData,
-    VisualCrossingTooManyRequests,
-    VisualCrossingBadRequest,
-    VisualCrossingInternalServerError,
-    VisualCrossingUnauthorized,
-)
-
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
-    Platform,
     CONF_API_KEY,
     CONF_LANGUAGE,
     CONF_LATITUDE,
     CONF_LONGITUDE,
+    Platform,
 )
-from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import HomeAssistantError, ConfigEntryNotReady
+from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
+
+if TYPE_CHECKING:
+    from types import MappingProxyType
+
+    from homeassistant.config_entries import ConfigEntry
+    from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from pyVisualCrossing import (
+    ForecastDailyData,
+    ForecastData,
+    ForecastHourlyData,
+    VisualCrossing,
+    VisualCrossingBadRequest,
+    VisualCrossingInternalServerError,
+    VisualCrossingTooManyRequests,
+    VisualCrossingUnauthorized,
+)
 
-from .const import DOMAIN, CONF_DAYS
+from .const import CONF_DAYS, DOMAIN
 
 PLATFORMS = [Platform.WEATHER]
 
@@ -41,7 +44,6 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
     """Set up Visual Crossing as config entry."""
-
     coordinator = VCDataUpdateCoordinator(hass, config_entry)
     await coordinator.async_config_entry_first_refresh()
 
@@ -66,12 +68,12 @@ async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> 
     return unload_ok
 
 
-async def async_update_entry(hass: HomeAssistant, config_entry: ConfigEntry):
+async def async_update_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> None:
     """Reload Visual Crossing component when options changed."""
     await hass.config_entries.async_reload(config_entry.entry_id)
 
 
-class CannotConnect(HomeAssistantError):
+class CannotConnectError(HomeAssistantError):
     """Unable to connect to the web site."""
 
 
@@ -80,11 +82,10 @@ class VCDataUpdateCoordinator(DataUpdateCoordinator["VCWeatherData"]):
 
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry) -> None:
         """Initialize global Visual Crossing data updater."""
-        # self._unsub_track_home: Callable[[], None] | None = None
         self.weather = VCWeatherData(hass, config_entry.data, config_entry.options)
         self.weather.initialize_data()
 
-        update_interval = timedelta(minutes=randrange(31, 32))
+        update_interval = timedelta(minutes=randrange(31, 32))  # noqa: S311
 
         super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=update_interval)
 
@@ -93,7 +94,8 @@ class VCDataUpdateCoordinator(DataUpdateCoordinator["VCWeatherData"]):
         try:
             return await self.weather.fetch_data()
         except Exception as err:
-            raise UpdateFailed(f"Update failed: {err}") from err
+            msg = f"Update failed: {err}"
+            raise UpdateFailed(msg) from err
 
 
 class VCWeatherData:
@@ -145,9 +147,8 @@ class VCWeatherData:
             _LOGGER.debug(err)
             return False
 
-
         if not resp:
-            raise CannotConnect()
+            raise CannotConnectError
         self.current_weather_data = resp
         self.daily_forecast = resp.forecast_daily
         self.hourly_forecast = resp.forecast_hourly
