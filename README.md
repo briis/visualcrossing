@@ -8,7 +8,7 @@
 [![Community Forum][forum-shield]][forum]
 
 <p align="center">
-  <img width="128" height="128" src="https://github.com/briis/visualcrossing/blob/main/images/icon.png?raw=true">
+  <img width="128" height="128" src="https://github.com/briis/visualcrossing/blob/main/custom_components/visualcrossing/brand/icon.png?raw=true">
 </p>
 
 The Visual Crossing integration adds support for retrieving current weather data and daily/hourly forecast data from [Visual Crossing](https://www.visualcrossing.com/).
