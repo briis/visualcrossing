@@ -1,13 +1,9 @@
-"""Support for WeatherFlow Forecast weather service."""
+"""Support for Visual Crossing weather service."""
 
 from __future__ import annotations
 
-import logging
 from typing import TYPE_CHECKING, Any
 
-from homeassistant.components.weather import (
-    DOMAIN as WEATHER_DOMAIN,
-)
 from homeassistant.components.weather import (
     Forecast,
     SingleCoordinatorWeatherEntity,
@@ -23,81 +19,36 @@ from homeassistant.const import (
     UnitOfTemperature,
 )
 from homeassistant.core import callback
-from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
-from homeassistant.util.unit_system import METRIC_SYSTEM
+
+from .const import (
+    ATTR_DESCRIPTION,
+    ATTR_LAST_UPDATED,
+    DEFAULT_NAME,
+    DOMAIN,
+    ICON_TO_CONDITION,
+)
+from .coordinator import VCConfigEntry, VCDataUpdateCoordinator
 
 if TYPE_CHECKING:
-    from types import MappingProxyType
-
-    from homeassistant.config_entries import ConfigEntry
     from homeassistant.core import HomeAssistant
-    from homeassistant.helpers.entity_platform import AddEntitiesCallback
-
-from . import VCDataUpdateCoordinator
-from .const import ATTR_DESCRIPTION, ATTR_LAST_UPDATED, CONDITIONS_MAP, DOMAIN
-
-DEFAULT_NAME = "Visual Crossing Weather"
-
-_LOGGER = logging.getLogger(__name__)
+    from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 
 async def async_setup_entry(
-    hass: HomeAssistant,
-    config_entry: ConfigEntry,
-    async_add_entities: AddEntitiesCallback,
+    hass: HomeAssistant,  # noqa: ARG001
+    config_entry: VCConfigEntry,
+    async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     """Add a weather entity from a config_entry."""
-    coordinator: VCDataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id]
-    entity_registry = er.async_get(hass)
-
-    name: str | None
-    is_metric = hass.config.units is METRIC_SYSTEM
-
-    if (name := config_entry.data.get(CONF_NAME)) is None:
-        name = DEFAULT_NAME
-    elif TYPE_CHECKING:
-        assert isinstance(name, str)  # noqa: S101
-
-    entities = [
-        VCWeather(
-            coordinator, config_entry.data, hourly=False, name=name, is_metric=is_metric
-        )
-    ]
-
-    # Add hourly entity to legacy config entries
-    if entity_registry.async_get_entity_id(
-        WEATHER_DOMAIN, DOMAIN, _calculate_unique_id(config_entry.data, hourly=True)
-    ):
-        name = f"{name} hourly"
-        entities.append(
-            VCWeather(
-                coordinator,
-                config_entry.data,
-                hourly=True,
-                name=name,
-                is_metric=is_metric,
-            )
-        )
-
-    async_add_entities(entities)
+    async_add_entities([VCWeather(config_entry.runtime_data, config_entry)])
 
 
-def _calculate_unique_id(config: MappingProxyType[str, Any], *, hourly: bool) -> str:
-    """Calculate unique ID."""
-    name_appendix = ""
-    if hourly:
-        name_appendix = "-hourly"
-
-    return f"{config[CONF_LATITUDE]}-{config[CONF_LONGITUDE]}{name_appendix}"
-
-
-def format_condition(condition: str) -> str:
-    """Return condition from dict CONDITIONS_MAP."""
-    for key, value in CONDITIONS_MAP.items():
-        if condition in value:
-            return key
-    return condition
+def format_condition(icon: str | None) -> str | None:
+    """Map a Visual Crossing icon name to a Home Assistant condition."""
+    if icon is None:
+        return None
+    return ICON_TO_CONDITION.get(icon, icon)
 
 
 class VCWeather(SingleCoordinatorWeatherEntity[VCDataUpdateCoordinator]):
@@ -105,6 +56,7 @@ class VCWeather(SingleCoordinatorWeatherEntity[VCDataUpdateCoordinator]):
 
     _attr_attribution = "Weather Data delivered by Visual Crossing"
     _attr_has_entity_name = True
+    _attr_name = None
     _attr_native_temperature_unit = UnitOfTemperature.CELSIUS
     _attr_native_precipitation_unit = UnitOfPrecipitationDepth.MILLIMETERS
     _attr_native_pressure_unit = UnitOfPressure.HPA
@@ -114,164 +66,127 @@ class VCWeather(SingleCoordinatorWeatherEntity[VCDataUpdateCoordinator]):
     )
 
     def __init__(
-        self,
-        coordinator: VCDataUpdateCoordinator,
-        config: MappingProxyType[str, Any],
-        *,
-        hourly: bool,
-        name: str,
-        is_metric: bool,
+        self, coordinator: VCDataUpdateCoordinator, config_entry: VCConfigEntry
     ) -> None:
-        """Initialise the platform with a data instance and station."""
+        """Initialise the weather entity."""
         super().__init__(coordinator)
-        self._attr_unique_id = _calculate_unique_id(config, hourly=hourly)
-        self._config = config
-        self._is_metric = is_metric
-        self._hourly = hourly
-        self._attr_entity_registry_enabled_default = not hourly
+        self._attr_unique_id = (
+            f"{config_entry.data[CONF_LATITUDE]}-{config_entry.data[CONF_LONGITUDE]}"
+        )
         self._attr_device_info = DeviceInfo(
-            name="Weather",
+            name=config_entry.data.get(CONF_NAME, DEFAULT_NAME),
             entry_type=DeviceEntryType.SERVICE,
-            identifiers={(DOMAIN,)},  # type: ignore[arg-type]
+            identifiers={(DOMAIN, config_entry.entry_id)},
             manufacturer="Visual Crossing",
             model="Forecast",
             configuration_url="https://www.visualcrossing.com/weather-api",
         )
-        self._attr_name = name
 
     @property
     def condition(self) -> str | None:
         """Return the current condition."""
-        condition = self.coordinator.data.current_weather_data.icon
-        if condition is None:
-            return None
-        return format_condition(condition)
+        return format_condition(self.coordinator.data.icon)
 
     @property
     def native_temperature(self) -> float | None:
         """Return the temperature."""
-        return self.coordinator.data.current_weather_data.temperature
+        return self.coordinator.data.temperature
+
+    @property
+    def native_apparent_temperature(self) -> float | None:
+        """Return the apparent temperature."""
+        return self.coordinator.data.apparent_temperature
 
     @property
     def native_pressure(self) -> float | None:
         """Return the pressure."""
-        return self.coordinator.data.current_weather_data.pressure
+        return self.coordinator.data.pressure
 
     @property
     def humidity(self) -> float | None:
         """Return the humidity."""
-        return self.coordinator.data.current_weather_data.humidity
+        return self.coordinator.data.humidity
 
     @property
     def native_wind_speed(self) -> float | None:
         """Return the wind speed."""
-        return self.coordinator.data.current_weather_data.wind_speed
+        return self.coordinator.data.wind_speed
 
     @property
     def wind_bearing(self) -> float | str | None:
         """Return the wind direction."""
-        return self.coordinator.data.current_weather_data.wind_bearing
+        return self.coordinator.data.wind_bearing
 
     @property
     def native_wind_gust_speed(self) -> float | None:
         """Return the wind gust speed in native units."""
-        return self.coordinator.data.current_weather_data.wind_gust_speed
+        return self.coordinator.data.wind_gust_speed
 
     @property
     def native_dew_point(self) -> float | None:
         """Return the dew point."""
-        return self.coordinator.data.current_weather_data.dew_point
+        return self.coordinator.data.dew_point
 
     @property
     def cloud_coverage(self) -> float | None:
         """Return the cloud coverage."""
-        return self.coordinator.data.current_weather_data.cloud_cover
+        return self.coordinator.data.cloud_cover
+
+    @property
+    def uv_index(self) -> float | None:
+        """Return the UV index."""
+        return self.coordinator.data.uv_index
 
     @property
     def native_visibility(self) -> float | None:
         """Return the visibility."""
-        return self.coordinator.data.current_weather_data.visibility
+        return self.coordinator.data.visibility
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
         """Return non standard attributes."""
+        data = self.coordinator.data
         return {
-            ATTR_DESCRIPTION: self.coordinator.data.current_weather_data.description,
-            ATTR_LAST_UPDATED: (
-                self.coordinator.data.current_weather_data.datetime.isoformat()
-            ),
+            ATTR_DESCRIPTION: data.description,
+            ATTR_LAST_UPDATED: data.datetime.isoformat() if data.datetime else None,
         }
-
-    def _forecast(self, *, hourly: bool) -> list[Forecast] | None:
-        """Return the forecast array."""
-        ha_forecast: list[Forecast] = []
-
-        if hourly:
-            for item in self.coordinator.data.hourly_forecast:
-                condition = None if item.icon is None else format_condition(item.icon)
-                _LOGGER.debug(item.datetime.isoformat())
-                datetime = item.datetime.isoformat()
-                humidity = item.humidity
-                precipitation_probability = item.precipitation_probability
-                native_precipitation = item.precipitation
-                cloud_cover = item.cloud_cover
-                native_pressure = item.pressure
-                native_temperature = item.temperature
-                native_apparent_temperature = item.apparent_temperature
-                wind_bearing = item.wind_bearing
-                native_wind_gust_speed = item.wind_gust_speed
-                native_wind_speed = item.wind_speed
-                uv_index = item.uv_index
-
-                ha_item = {
-                    "condition": condition,
-                    "datetime": datetime,
-                    "humidity": humidity,
-                    "precipitation_probability": precipitation_probability,
-                    "native_precipitation": native_precipitation,
-                    "cloud_coverage": cloud_cover,
-                    "native_pressure": native_pressure,
-                    "native_temperature": native_temperature,
-                    "native_apparent_temperature": native_apparent_temperature,
-                    "wind_bearing": wind_bearing,
-                    "native_wind_gust_speed": native_wind_gust_speed,
-                    "native_wind_speed": native_wind_speed,
-                    "uv_index": uv_index,
-                }
-                ha_forecast.append(ha_item)
-        else:
-            for item in self.coordinator.data.daily_forecast:
-                condition = None if item.icon is None else format_condition(item.icon)
-                datetime = item.datetime.isoformat()
-                precipitation_probability = item.precipitation_probability
-                cloud_cover = item.cloud_cover
-                native_temperature = item.temperature
-                native_templow = item.temp_low
-                native_precipitation = item.precipitation
-                wind_bearing = int(item.wind_bearing)
-                native_wind_speed = item.wind_speed
-
-                ha_item = {
-                    "condition": condition,
-                    "datetime": datetime,
-                    "precipitation_probability": precipitation_probability,
-                    "native_precipitation": native_precipitation,
-                    "cloud_coverage": cloud_cover,
-                    "native_temperature": native_temperature,
-                    "native_templow": native_templow,
-                    "wind_bearing": wind_bearing,
-                    "native_wind_speed": native_wind_speed,
-                }
-                ha_forecast.append(ha_item)
-
-        return ha_forecast
 
     @callback
     def _async_forecast_daily(self) -> list[Forecast] | None:
         """Return the daily forecast in native units."""
-        return self._forecast(hourly=False)
+        return [
+            Forecast(
+                condition=format_condition(item.icon),
+                datetime=item.datetime.isoformat(),
+                precipitation_probability=item.precipitation_probability,
+                native_precipitation=item.precipitation,
+                cloud_coverage=item.cloud_cover,
+                native_temperature=item.temperature,
+                native_templow=item.temp_low,
+                wind_bearing=item.wind_bearing,
+                native_wind_speed=item.wind_speed,
+            )
+            for item in self.coordinator.data.forecast_daily or []
+        ]
 
     @callback
     def _async_forecast_hourly(self) -> list[Forecast] | None:
         """Return the hourly forecast in native units."""
-        return self._forecast(hourly=True)
+        return [
+            Forecast(
+                condition=format_condition(item.icon),
+                datetime=item.datetime.isoformat(),
+                humidity=item.humidity,
+                precipitation_probability=item.precipitation_probability,
+                native_precipitation=item.precipitation,
+                cloud_coverage=item.cloud_cover,
+                native_pressure=item.pressure,
+                native_temperature=item.temperature,
+                native_apparent_temperature=item.apparent_temperature,
+                wind_bearing=item.wind_bearing,
+                native_wind_gust_speed=item.wind_gust_speed,
+                native_wind_speed=item.wind_speed,
+                uv_index=item.uv_index,
+            )
+            for item in self.coordinator.data.forecast_hourly or []
+        ]

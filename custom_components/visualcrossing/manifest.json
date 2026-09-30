@@ -10,7 +10,7 @@
     "iot_class": "cloud_polling",
     "issue_tracker": "https://github.com/briis/visualcrossing/issues",
     "requirements": [
-        "pyVisualCrossing==0.1.16"
+        "pyVisualCrossing==1.0.2"
     ],
-    "version": "0.1.8"
+    "version": "0.2.0"
 }

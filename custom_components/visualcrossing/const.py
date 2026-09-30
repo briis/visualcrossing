@@ -1,5 +1,7 @@
 """Constants for Visual Crossing Weather component."""
 
+from datetime import timedelta
+
 from homeassistant.components.weather import (
     ATTR_CONDITION_CLEAR_NIGHT,
     ATTR_CONDITION_CLOUDY,
@@ -24,7 +26,10 @@ DEFAULT_LANGUAGE = "en"
 DEFAULT_NAME = "Home"
 DOMAIN = "visualcrossing"
 
-CONDITIONS_MAP = {
+MAX_DAYS = 14
+UPDATE_INTERVAL = timedelta(minutes=31)
+
+_CONDITIONS_MAP = {
     ATTR_CONDITION_CLEAR_NIGHT: {"clear-night"},
     ATTR_CONDITION_CLOUDY: {"cloudy"},
     ATTR_CONDITION_FOG: {"fog"},
@@ -53,4 +58,9 @@ CONDITIONS_MAP = {
     },
     ATTR_CONDITION_SUNNY: {"clear-day"},
     ATTR_CONDITION_WINDY: {"wind"},
+}
+
+# Visual Crossing icon name -> Home Assistant condition
+ICON_TO_CONDITION = {
+    icon: condition for condition, icons in _CONDITIONS_MAP.items() for icon in icons
 }

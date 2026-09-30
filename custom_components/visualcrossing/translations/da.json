@@ -1,13 +1,15 @@
 {
     "config": {
         "abort": {
-            "unique_id": "Denne lokation er allerede konfigureret."
+            "already_configured": "Denne lokation er allerede konfigureret."
         },
         "error": {
             "unauthorized": "API nøglen er ikke korrekt eller din konto er inaktiv eller deaktiveret",
             "bad_request": "Forespørgslen er ikke gyldig. En parameter er ikke korrekt",
             "server_error": "Visual Crossing serverne har en intern fejl",
-            "too_many": "For mange daglige forespørgsler for den aktuelle plan"
+            "too_many": "For mange daglige forespørgsler for den aktuelle plan",
+            "cannot_connect": "Kunne ikke forbinde til Visual Crossing",
+            "unknown": "Uventet fejl"
         },
         "step": {
             "user": {

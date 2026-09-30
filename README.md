@@ -21,7 +21,7 @@ Platform | Description
 -- | --
 `weather` | A Home Assistant `weather` entity with current conditions, daily forecast, and hourly forecast data.
 
-Minimum required version of Home Assistant is **2023.9.0**, as this integration uses the Weather entity forecast types introduced in that release.
+Minimum required version of Home Assistant is **2025.2.0**.
 
 ## Installation through HACS (Recommended Method)
 
