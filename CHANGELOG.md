@@ -17,7 +17,7 @@
 - Values entered in the setup form are kept when the form is shown again after an error.
 - Update errors (bad request, too many requests, server errors, network problems) now mark the entity unavailable instead of silently keeping old data.
 - The setup flow no longer creates a new HTTP session on every attempt.
-- The integration now installs `pyVisualCrossing` 1.0.2, the same version used for development.
+- Bumped `pyVisualCrossing` to 1.1.0. HTTP errors the library does not recognise are now handled too.
 
 ### Changes
 

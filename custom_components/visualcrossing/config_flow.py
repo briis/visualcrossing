@@ -22,6 +22,7 @@ from pyVisualCrossing import (
     SUPPORTED_LANGUAGES,
     VisualCrossing,
     VisualCrossingBadRequest,
+    VisualCrossingException,
     VisualCrossingInternalServerError,
     VisualCrossingTooManyRequests,
     VisualCrossingUnauthorized,
@@ -43,12 +44,14 @@ if TYPE_CHECKING:
 
 _LOGGER = logging.getLogger(__name__)
 
-# Exception raised while validating input -> translation key of the form error
+# Exception raised while validating input -> translation key of the form error.
+# Checked in order, so the VisualCrossingException base class must come last.
 VALIDATION_ERRORS: dict[type[Exception], str] = {
     VisualCrossingUnauthorized: "unauthorized",
     VisualCrossingBadRequest: "bad_request",
     VisualCrossingInternalServerError: "server_error",
     VisualCrossingTooManyRequests: "too_many",
+    VisualCrossingException: "cannot_connect",
     ClientError: "cannot_connect",
     TimeoutError: "cannot_connect",
 }

@@ -18,10 +18,7 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 from pyVisualCrossing import (
     ForecastData,
     VisualCrossing,
-    VisualCrossingBadRequest,
-    VisualCrossingInternalServerError,
-    VisualCrossingTooManyRequests,
-    VisualCrossingUnauthorized,
+    VisualCrossingException,
 )
 
 from .const import CONF_DAYS, DEFAULT_DAYS, DEFAULT_LANGUAGE, DOMAIN, UPDATE_INTERVAL
@@ -61,14 +58,7 @@ class VCDataUpdateCoordinator(DataUpdateCoordinator[ForecastData]):
         """Fetch data from Visual Crossing."""
         try:
             data = await self._api.async_fetch_data()
-        except (
-            VisualCrossingBadRequest,
-            VisualCrossingInternalServerError,
-            VisualCrossingTooManyRequests,
-            VisualCrossingUnauthorized,
-            ClientError,
-            TimeoutError,
-        ) as err:
+        except (VisualCrossingException, ClientError, TimeoutError) as err:
             msg = f"Error fetching Visual Crossing data: {err}"
             raise UpdateFailed(msg) from err
 
